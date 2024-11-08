@@ -7,14 +7,18 @@ A Go tool that analyzes the "half-life" of code in Git repositories by tracking 
 - Tracks individual line changes throughout Git history
 - Calculates code half-life (time until 50% of code is modified)
 - Provides detailed statistics on code longevity
-- Supports filtering by file types
-- Generates comprehensive reports on code modification patterns
+- Supports filtering by file types and extensions
+- Generates comprehensive reports including:
+  - Survival rates over time
+  - Change frequency metrics
+  - Code age distribution
+  - Edit size statistics
 
 ## Installation
 
 ### Prerequisites
 
-- Go 1.16 or later
+- Go 1.19 or later
 - Git installed on your system
 
 ### Steps
@@ -43,15 +47,15 @@ go build
 Basic usage:
 
 ```bash
-./halflife /path/to/repository
+./halflife /path/to/repository [file-pattern]
 ```
 
-Analyze specific file types:
+Examples:
 
 ```bash
-./halflife /path/to/repository "*.js"  # Analyze JavaScript files
-
-./halflife /path/to/repository "*.go"  # Analyze Go files
+./halflife /path/to/repository           # Analyzes *.go files by default
+./halflife /path/to/repository "*.js"    # Analyze JavaScript files
+./halflife /path/to/repository "*.py"    # Analyze Python files
 ```
 
 ## Output Example
@@ -85,8 +89,8 @@ Survival Rate:
 Change Frequency:
 ---------------
   Created: 15234
-  Deleted: 3421
   Modified: 8543
+  Deleted: 3421
 
 Additional Metrics:
 ----------------
@@ -113,10 +117,13 @@ The tool:
 
 ## Limitations
 
-- Only tracks lines that have been modified at least once
-- Analysis is based on the current state of the repository
+- Only tracks lines in their current file location (line moves between files are treated as delete + create)
+- Merges and non-linear history may affect accuracy
 - Very large repositories might require significant processing time
-- Only analyzes the main branch (HEAD)
+- Analysis is based on the main branch only (follows HEAD)
+- Empty lines are ignored in the analysis
+- File renames may be interpreted as deletes and creates
+- Only analyzes files matching the specified pattern (defaults to *.go)
 
 ## Contributing
 
